@@ -1,0 +1,40 @@
+include("${CMAKE_CURRENT_LIST_DIR}/id.cmake")
+
+byd__package__add_component(${package}
+    qt3d
+    qtactiveqt
+    qtandroidextras
+    qtbase
+    qtcanvas3d
+    qtcharts
+    qtconnectivity
+    qtdatavis3d
+    qtdeclarative
+    qtdoc
+    qtgamepad
+    qtgraphicaleffects
+    qtimageformats
+    qtlocation
+    qtmacextras
+    qtmultimedia
+    qtpurchasing
+    qtquickcontrols
+    qtquickcontrols2
+    qtscript
+    qtscxml
+    qtsensors
+    qtserialbus
+    qtserialport
+    qtsvg
+    qttools
+    qttranslations
+    qtvirtualkeyboard
+    qtwayland
+    qtwebchannel
+    qtwebengine
+    qtwebsockets
+    qtwebview
+    qtwinextras
+    qtx11extras
+    qtxmlpatterns
+)
