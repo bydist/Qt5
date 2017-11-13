@@ -138,34 +138,6 @@ function(byd__Qt5__configure__add_arg_system_or_qt package dependency)
 endfunction()
 
 ##--------------------------------------------------------------------------------------------------------------------##
-
-function(byd__Qt5__configure__add_components_to_arg package)
-
-    byd__package__get_components_to_build(${package} components_to_build)
-    if(components_to_build)
-        byd__package__get_components(${package} components)
-        cmut_debug("[byd][Qt5] - [${package}] : all components = ${components}")
-        foreach(component IN LISTS components)
-            if(component IN_LIST components_to_build)
-                list(REMOVE_ITEM components_to_build "${component}")
-            else()
-                byd__Qt5__configure__add_args(${package} -skip ${component})
-            endif()
-        endforeach()
-
-        if(components_to_build)
-            cmut_info("[byd][Qt5] - [${package}] : component(s) : ")
-            foreach(component IN LISTS components_to_build)
-                cmut_info("[byd][Qt5] - [${package}] :   - ${component}")
-            endforeach()
-            cmut_fatal("[byd][Qt5] - [${package}] : They are component requested but not provide by package definition.")
-        endif()
-
-    endif()
-
-endfunction()
-
-##--------------------------------------------------------------------------------------------------------------------##
 ##--------------------------------------------------------------------------------------------------------------------##
 ##--------------------------------------------------------------------------------------------------------------------##
 
@@ -211,7 +183,6 @@ function(byd__Qt5__generate_configure_command package)
 #    list(APPEND configure_arg "-make" "tests")
     list(APPEND configure_arg "-nomake" "examples")
 
-    byd__Qt5__configure__add_components_to_arg(${package})
 
     set(configure_cmd "${source_dir}/configure")
     if(WIN32)
@@ -322,3 +293,64 @@ endfunction()
 ##--------------------------------------------------------------------------------------------------------------------##
 ##--------------------------------------------------------------------------------------------------------------------##
 ##--------------------------------------------------------------------------------------------------------------------##
+
+
+function(byd__Qt5__get_component_inter_dependencies component result)
+
+    if(WIN32)
+        set(ACTIVE_QT qtactiveqt)
+    endif()
+    if(ANDROID)
+        set(ANDROID_EXTRAS qtandroidextras)
+    endif()
+
+
+    set(qtbase_deps)
+
+    set(qtandroidextras_deps qtbase)
+    set(qtmacextras_deps     qtbase)
+    set(qtx11extras_deps     qtbase)
+    set(qtsvg_deps           qtbase)
+    set(qtxmlpatterns_deps   qtbase)
+    set(${ACTIVE_QT}_deps    qtbase)
+    set(qtimageformats_deps  qtbase)
+    set(qtserialport_deps    qtbase)
+
+    set(qtdeclarative_deps qtbase qtsvg qtxmlpatterns)
+
+    set(qtcanvas3d_deps         qtdeclarative qtbase qtsvg qtxmlpatterns)
+    set(qtdoc_deps              qtdeclarative qtbase qtsvg qtxmlpatterns)
+    set(qtgraphicaleffects_deps qtdeclarative qtbase qtsvg qtxmlpatterns)
+    set(qtmultimedia_deps       qtbase qtdeclarative qtsvg qtxmlpatterns)
+    set(qtsensors_deps          qtbase qtdeclarative qtsvg qtxmlpatterns)
+    set(qtwayland_deps          qtbase qtdeclarative qtsvg qtxmlpatterns)
+    set(qtwebsockets_deps       qtbase qtdeclarative qtsvg qtxmlpatterns)
+
+    set(qtquickcontrols_deps qtdeclarative qtgraphicaleffects qtbase qtsvg qtxmlpatterns)
+    set(qtwinextras_deps     qtbase qtdeclarative qtmultimedia qtsvg qtxmlpatterns)
+    set(qtconnectivity_deps  qtbase ${ANDROID_EXTRAS} qtdeclarative qtsvg qtxmlpatterns)
+    set(qtwebchannel_deps    qtbase qtdeclarative qtwebsockets qtsvg qtxmlpatterns)
+    set(qt3d_deps            qtdeclarative qtimageformats qtbase qtsvg qtxmlpatterns)
+
+    set(qtlocation_deps       qtbase qtdeclarative qtquickcontrols qtgraphicaleffects qtsvg qtxmlpatterns)
+    set(qtquickcontrols2_deps qtquickcontrols qtbase qtdeclarative qtgraphicaleffects qtsvg qtxmlpatterns)
+
+    set(qttools_deps     qtbase qtdeclarative ${ACTIVE_QT} qtsvg qtxmlpatterns)
+    set(qtwebengine_deps qtquickcontrols qtwebchannel qtlocation qtdeclarative qtgraphicaleffects qtbase qtsvg qtxmlpatterns qtwebsockets)
+
+    set(qtwebview_deps      qtdeclarative qtwebengine qtquickcontrols qtwebchannel qtlocation qtgraphicaleffects qtbase qtsvg qtxmlpatterns qtwebsockets)
+    set(qtscript_deps       qtbase qttools qtbase qtdeclarative ${ACTIVE_QT} qtsvg qtxmlpatterns)
+    set(qttranslations_deps qttools qtbase qtdeclarative ${ACTIVE_QT} qtsvg qtxmlpatterns)
+
+    set(qtcharts_deps          qtbase)
+    set(qtdatavis3d_deps       qtbase)
+    set(qtgamepad_deps         qtbase)
+    set(qtpurchasing_deps      qtbase)
+    set(qtscxml_deps           qtbase)
+    set(qtserialbus_deps       qtserialport qtbase)
+    set(qtvirtualkeyboard_deps qtbase)
+
+
+    byd__func__return(${component}_deps)
+
+endfunction()

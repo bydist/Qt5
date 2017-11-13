@@ -2,58 +2,35 @@ include("${CMAKE_CURRENT_LIST_DIR}/id.cmake")
 
 
 
-byd__package__set_dependency(${package}
+
+
+byd__package__get_components(${package} components)
+
+foreach(component IN LISTS components)
+endforeach()
+
+byd__package__set_component_dependencies(${package}
+    COMPONENT
+        qtbase
+    DEPENDS
 #    doubleconvertion
 #    freetype
 #    harfbuzz
-    icu
-#    libjpeg_turbo
-#    libpng
-#    libproxy
-    OpenSSL
+        icu
+        libjpeg_turbo
+        libpng
+        libproxy
+        OpenSSL
 #    pcre
-    zlib
+        zlib
     )
 
 if(UNIX AND NOT APPLE)
-    byd__package__add_dependency(${package}
-#        alsa
-#        expat
-#        fontconfig
-#        glib
-#        gtk
-#        ICE
-#        libinput
-#        libxslt
+byd__package__set_component_dependencies(${package}
+    COMPONENT
+        qtbase
+    DEPENDS
         libwebp
-#        mesa
-#        mtdev
-#        journald
-#        pulseaudio
-#        syslog
-#        SM
-#        xcb
-#        xcb-util-cursor
-#        xcb-util-errors
-#        xcb-util-keysyms
-#        xcb-util-image
-#        xcb-util-renderutil
-#        xcb-util-wm
-#        xkbcommon
-#        xkbcommon-evdev
-#        xshmfence
-#        X11
-#        Xcomposite
-#        Xcursor
-#        Xdamage
-#        Xext
-#        Xfixes
-#        Xi
-#        Xrandr
-#        Xrender
-#        Xtst
-#        Xxf86vm
-#        XScrnSaver
         )
 endif()
 

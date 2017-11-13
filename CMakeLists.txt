@@ -1,61 +1,41 @@
-include("${CMAKE_CURRENT_LIST_DIR}/id.cmake")
+
 include("${CMAKE_CURRENT_LIST_DIR}/byd__Qt5__generate.cmake")
 
 
+function(build package)
 
-byd__Qt5__configure__use_open_source(${package})
+    cmut_info("[byd][Qt5] = build( ${package} )")
 
-include("${CMAKE_CURRENT_LIST_DIR}/options/dependencies.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/options/all_platform.cmake")
-if(APPLE)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/apple.cmake")
-elseif(MSVC)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/msvc.cmake")
-elseif(UNIX)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/linux.cmake")
-endif()
+    byd__package__split_package_component_name(${package} package_name component_name)
+    byd__private__is_empty("${component_name}" is_component_name_empty)
 
 
+    if(is_component_name_empty)
+        cmut_info("[byd] - [Qt5] : no component to build.")
+        return()
+    endif()
 
-byd__Qt5__generate_configure_command(${package})
-byd__Qt5__generate_build_command(${package})
-byd__Qt5__generate_install_command(${package})
-
-file(GLOB patchList
-    LIST_DIRECTORIES false
-    "${CMAKE_CURRENT_LIST_DIR}/patch/*.patch"
-    )
-byd__custom_patch(${package} patchList)
-
-byd__EP__add(${package})
+    byd__package__get_components(${package_name} components)
+    if(NOT component_name IN_LIST components)
+        cmut_fatal("[byd][Qt5] - [${package}] : component \"${component_name}\" requested but not provide by package definition.")
+    endif()
 
 
+    byd__Qt5__get_component_inter_dependencies(${component_name} dependencies)
+    set(components_to_keep ${component_name} ${dependencies})
+
+    foreach(component IN LISTS components_to_keep)
+        list(REMOVE_ITEM components ${component})
+    endforeach()
+
+    foreach(component IN LISTS components)
+        byd__Qt5__configure__add_args(${package} -skip ${component})
+    endforeach()
+
+    include("${CMAKE_CURRENT_LIST_DIR}/per_component_CMakeLists.txt")
+
+endfunction()
 
 
 
-include(ExternalProject)
-
-list(APPEND
-    install_qt_conf_COMMAND
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${CMAKE_INSTALL_PREFIX}/bin/qt.conf"
-    )
-
-if(UNIX AND NOT APPLE)
-    list(APPEND
-        install_qt_conf_COMMAND
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${CMAKE_INSTALL_PREFIX}/libexec/qt.conf"
-        )
-endif()
-
-set(arguments
-    ${install_qt_conf_COMMAND}
-    DEPENDEES install
-    DEPENDERS create_archive
-    )
-
-byd__EP__step__log_EP_Add_Step_command(${package} create_archive "${arguments}")
-ExternalProject_Add_Step(
-    ${package}
-    install_qt_conf
-    ${arguments}
-    )
+build(${package})
