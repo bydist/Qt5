@@ -26,7 +26,7 @@ byd__package__set_component_dependencies(${package}
     )
 
 if(UNIX AND NOT APPLE)
-byd__package__set_component_dependencies(${package}
+byd__package__add_component_dependencies(${package}
     COMPONENT
         qtbase
     DEPENDS
