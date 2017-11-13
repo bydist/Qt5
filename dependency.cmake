@@ -30,7 +30,7 @@ byd__package__add_component_dependencies(${package}
     COMPONENT
         qtbase
     DEPENDS
-        libwebp
+        libwebp--libwebpdemux
         )
 endif()
 
