@@ -19,7 +19,7 @@ byd__package__set_component_dependencies(${package}
         icu
         libjpeg_turbo
         libpng
-        libproxy
+#        libproxy
         OpenSSL
 #    pcre
         zlib
