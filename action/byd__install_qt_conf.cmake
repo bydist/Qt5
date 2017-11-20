@@ -3,9 +3,11 @@
 
 function(byd__install_qt_conf package)
 
+    byd__package__get_install_dir(${package} install_dir)
+
     list(APPEND
         install_qt_conf_COMMAND
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${CMAKE_INSTALL_PREFIX}/bin/qt.conf"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${install_dir}/bin/qt.conf"
         )
 
 
@@ -16,7 +18,7 @@ function(byd__install_qt_conf package)
 
                 list(APPEND
                     install_qt_conf_COMMAND
-                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${CMAKE_INSTALL_PREFIX}/libexec/qt.conf"
+                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/qt.conf" "${install_dir}/libexec/qt.conf"
                     )
 
             endif()
