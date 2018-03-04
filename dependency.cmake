@@ -5,8 +5,21 @@ include("${CMAKE_CURRENT_LIST_DIR}/id.cmake")
 
 
 byd__package__get_components(${package} components)
+if(components STREQUAL "")
+    include("${CMAKE_CURRENT_LIST_DIR}/component.cmake")
+    byd__package__get_components(${package} components)
+endif()
 
+
+list(REMOVE_ITEM components qtbase)
 foreach(component IN LISTS components)
+    byd__package__set_component_dependencies(${package}
+    COMPONENT
+        ${component}
+    DEPENDS
+        Qt5--qtbase
+    )
+
 endforeach()
 
 byd__package__set_component_dependencies(${package}
