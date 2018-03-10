@@ -1,12 +1,16 @@
 diff -Naur qt/qtbase/src/3rdparty/png_dependency.pri Qt5--qtbase/qtbase/src/3rdparty/png_dependency.pri
 --- qt/qtbase/src/3rdparty/png_dependency.pri	2016-12-01 09:17:04.000000000 +0100
 +++ Qt5--qtbase/qtbase/src/3rdparty/png_dependency.pri	2017-11-17 08:03:59.663001200 +0100
-@@ -7,7 +7,7 @@
+@@ -7,7 +7,11 @@
              LIBS_PRIVATE += -lpng
          }
      } else {
 -        LIBS += libpng.lib
-+        LIBS += libpng16.lib
++        contains(QT_CONFIG, debug) {
++            LIBS += libpng16d.lib
++        } else {
++            LIBS += libpng16.lib
++        }
      }
  } else: contains(QT_CONFIG, png) {
      INCLUDEPATH += $$PWD/libpng
