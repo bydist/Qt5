@@ -46,6 +46,15 @@ byd__Qt5__configure__add_args(${package} -linuxfb)
 byd__Qt5__configure__add_args(${package} -no-mirclient)
 
 byd__Qt5__configure__add_args(${package} -opengl)
-byd__Qt5__configure__add_args(${package} -libinput)
+
+
+cmut__system__get_distribution_name(distribution_name)
+cmut__system__get_distribution_version(distribution_version)
+if((${distribution_name} STREQUAL "Ubuntu") AND (${distribution_version} VERSION_EQUAL "14.04"))
+    set(libinput_prefix no-)
+endif()
+byd__Qt5__configure__add_args(${package} -${libinput_prefix}libinput)
+
+
 byd__Qt5__configure__add_args(${package} -gstreamer)
 byd__Qt5__configure__add_args(${package} -no-system-proxies)
