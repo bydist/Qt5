@@ -2,15 +2,7 @@
 
 byd__Qt5__configure__use_open_source(${package})
 
-include("${CMAKE_CURRENT_LIST_DIR}/options/all_platform.cmake")
-if(APPLE)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/apple.cmake")
-elseif(MSVC)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/msvc.cmake")
-elseif(UNIX)
-    include("${CMAKE_CURRENT_LIST_DIR}/options/linux.cmake")
-endif()
-
+include("${CMAKE_CURRENT_LIST_DIR}/options.cmake")
 
 
 byd__Qt5__generate_configure_command(${package})
@@ -22,7 +14,18 @@ file(GLOB patchList
     LIST_DIRECTORIES false
     "${CMAKE_CURRENT_LIST_DIR}/patch/*.patch"
     )
-byd__custom_patch(${package} patchList)
+file(GLOB patchList_config
+    LIST_DIRECTORIES false
+    "${CMAKE_CURRENT_LIST_DIR}/patch/${CMAKE_BUILD_TYPE}/*.patch"
+    )
+list(APPEND patchList ${patchList_config})
+
+if(patchList)
+    byd__custom_patch(${package} patchList)
+endif()
+
+
+
 
 byd__EP__add(${package})
 

@@ -66,20 +66,23 @@ function(__byd__Qt5__get_platform_compiler result)
             endif()
         endif()
     elseif(WIN32)
-        if(MSVC12)
+        if(MSVC_VERSION EQUAL 1800)
             set(mkspec win32-msvc2013)
-        elseif(MSVC14)
+        elseif(MSVC_VERSION EQUAL 1900)
             if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
                 set(mkspec win32-clang-msvc2015)
             else()
                 set(mkspec win32-msvc2015)
             endif()
+		elseif((MSVC_VERSION GREATER_EQUAL 1910) AND (MSVC_VERSION LESS_EQUAL 1919))
+            if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+                set(mkspec win32-clang-msvc2017)
+            else()
+                set(mkspec win32-msvc2017)
+            endif()
+		else()
+			cmut_fatal("[byd][Qt5] - msvc toolset version \"${MSVC_TOOLSET_VERSION}\" not supported by byd. patch me if you can!")
         endif()
-    endif()
-
-    if(NOT mkspec)
-        cmut_fatal("[byd - [Qt5] : platform/compiler not supported by byd-Qt5 script")
-        return()
     endif()
 
     byd__func__return(mkspec)
@@ -164,11 +167,19 @@ function(byd__Qt5__generate_configure_command package)
 
 
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
-        list(APPEND configure_arg "-debug" "-qml-debug")
+        list(APPEND configure_arg "-debug" "-no-optimized-tools")
+        if(APPLE)
+            list(APPEND configure_arg "-no-framework")
+        endif()
     elseif(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
-        list(APPEND configure_arg "-release" "-no-qml-debug" "-force-debug-info" "-separate-debug-info")
+        list(APPEND configure_arg "-release" "-force-debug-info" "-separate-debug-info")
     else()
-        list(APPEND configure_arg "-release" "-no-qml-debug")
+        list(APPEND configure_arg "-release")
+    endif()
+
+
+    if(BYD__OPTION__USE_CCACHE)
+        list(APPEND configure_arg "-ccache")
     endif()
 
 
@@ -180,13 +191,20 @@ function(byd__Qt5__generate_configure_command package)
         endif()
     endif()
 
+    if(CMAKE_CXX_STANDARD AND (NOT MSVC))
+        byd__Qt5__configure__add_args(${package} -c++std c++${CMAKE_CXX_STANDARD})
+    endif()
+
+
+
     __byd__Qt5__get_platform_compiler(platform_compiler)
     list(APPEND configure_arg "-platform" "${platform_compiler}")
 
-    # QtWebEngine is not supported in static mode, so always build in shared mode
-    #cmut_EP_add_config_arg_if(BUILD_SHARED_LIBS "-shared" "-static")
-
-#    list(APPEND configure_arg "-make" "tests")
+    if(BUILD_SHARED_LIBS)
+        byd__Qt5__configure__add_args(${package} -shared)
+    else()
+        byd__Qt5__configure__add_args(${package} -static)
+    endif()
     list(APPEND configure_arg "-nomake" "examples")
 
 
@@ -224,7 +242,7 @@ function(byd__Qt5__generate_build_command package)
         byd__private__get_num_core_available(num_core)
         set(command make -j${num_core})
     elseif(WIN32 AND MSVC)
-        set(command nmake)
+        set(command jom)
     endif()
 
     byd__script__begin("${script_dir}/build.cmake")

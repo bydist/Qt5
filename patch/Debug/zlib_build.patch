@@ -1,0 +1,15 @@
+diff -Naur Qt5--qtbase/qtbase/configure.json Qt5--qtbase_patched/qtbase/configure.json
+--- Qt5--qtbase/qtbase/configure.json	2018-02-08 19:24:48.000000000 +0100
++++ Qt5--qtbase_patched/qtbase/configure.json	2018-03-28 23:31:22.201198200 +0200
+@@ -154,10 +154,10 @@
+                     "z_streamp stream = 0;",
+                     "(void) zlibVersion();",
+                     "(void) compress2(0, 0, 0, 0, 1);  // compress2 was added in zlib version 1.0.8"
+                 ]
+             },
+             "sources": [
+-                { "libs": "-lzdll", "condition": "config.msvc" },
++                { "libs": "-lzdlld", "condition": "config.msvc" },
+                 { "libs": "-lz", "condition": "!config.msvc" }
+             ]
+         },

@@ -13,6 +13,7 @@ endif()
 
 list(REMOVE_ITEM components qtbase)
 foreach(component IN LISTS components)
+
     byd__package__set_component_dependencies(${package}
     COMPONENT
         ${component}
@@ -22,29 +23,25 @@ foreach(component IN LISTS components)
 
 endforeach()
 
+
 byd__package__set_component_dependencies(${package}
     COMPONENT
         qtbase
     DEPENDS
-#    doubleconvertion
-#    freetype
-#    harfbuzz
         icu
         libjpeg_turbo
         libpng
-        libproxy
-        OpenSSL
-#    pcre
         zlib
-    )
+)
 
-if(UNIX AND NOT APPLE)
+if(APPLE OR NOT UNIX)
+
     byd__package__add_component_dependencies(${package}
         COMPONENT
             qtbase
         DEPENDS
-            libwebp--libwebpdemux
-        )
+            OpenSSL
+    )
 endif()
 
 # dependency package
