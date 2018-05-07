@@ -2,7 +2,7 @@ diff -Naur Qt5--qtbase/qtwebengine/src/3rdparty/chromium/mojo/public/cpp/binding
 --- Qt5--qtbase/qtwebengine/src/3rdparty/chromium/mojo/public/cpp/bindings/interface_ptr_info.h	2016-11-07 14:46:18.000000000 +0000
 +++ Qt5--qtwebengine/qtwebengine/src/3rdparty/chromium/mojo/public/cpp/bindings/interface_ptr_info.h	2018-05-03 12:29:03.825310350 +0000
 @@ -34,7 +34,7 @@
- 
+
    InterfacePtrInfo& operator=(InterfacePtrInfo&& other) {
      if (this != &other) {
 -      handle_ = other.handle_.Pass();
@@ -16,7 +16,7 @@ diff -Naur Qt5--qtbase/qtwebengine/src/3rdparty/chromium/third_party/WebKit/Sour
 @@ -495,6 +495,30 @@
      return *this;
  }
- 
+
 +inline void swapAnchor(LinkedHashSetNodeBase& a, LinkedHashSetNodeBase& b)
 +{
 +    ASSERT(a.m_prev && a.m_next && b.m_prev && b.m_next);
@@ -40,14 +40,14 @@ diff -Naur Qt5--qtbase/qtwebengine/src/3rdparty/chromium/third_party/WebKit/Sour
 +    }
 +}
 +
-+  
++
  template<typename T, typename U, typename V, typename W>
  inline void LinkedHashSet<T, U, V, W>::swap(LinkedHashSet& other)
  {
 @@ -667,29 +691,6 @@
      remove(find(value));
  }
- 
+
 -inline void swapAnchor(LinkedHashSetNodeBase& a, LinkedHashSetNodeBase& b)
 -{
 -    ASSERT(a.m_prev && a.m_next && b.m_prev && b.m_next);
@@ -74,3 +74,14 @@ diff -Naur Qt5--qtbase/qtwebengine/src/3rdparty/chromium/third_party/WebKit/Sour
  inline void swap(LinkedHashSetNodeBase& a, LinkedHashSetNodeBase& b)
  {
      ASSERT(a.m_next != &a && b.m_next != &b);
+diff -Naur Qt5--qtbase/qtwebengine/src/3rdparty/chromium/v8/src/objects-body-descriptors.h Qt5--qtwebengine/qtwebengine/src/3rdparty/chromium/v8/src/objects-body-descriptors.h
+--- Qt5--qtbase/qtwebengine/src/3rdparty/chromium/v8/src/objects-body-descriptors.h	2016-11-07 14:46:18.000000000 +0000
++++ Qt5--qtwebengine/qtwebengine/src/3rdparty/chromium/v8/src/objects-body-descriptors.h	2018-05-07 09:44:14.712250692 +0000
+@@ -99,6 +99,6 @@
+
+   template <typename StaticVisitor>
+   static inline void IterateBody(HeapObject* obj, int object_size) {
+-    IterateBody(obj);
++    IterateBody<StaticVisitor>(obj);
+   }
+ };
