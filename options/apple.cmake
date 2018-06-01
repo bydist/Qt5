@@ -7,7 +7,7 @@ byd__Qt5__configure__add_args(${package} -system-libjpeg)
 byd__Qt5__configure__add_args(${package} -qt-doubleconversion)
 byd__Qt5__configure__add_args(${package} -qt-freetype)
 byd__Qt5__configure__add_args(${package} -qt-harfbuzz)
-byd__Qt5__configure__add_args(${package} -openssl)
+byd__Qt5__configure__add_args(${package} -openssl-linked)
 byd__Qt5__configure__add_args(${package} -libproxy)
 byd__Qt5__configure__add_args(${package} -qt-pcre)
 
@@ -18,10 +18,6 @@ if(CMAKE_BUILD_TYPE STREQUAL Debug)
 else()
     byd__Qt5__configure__add_args(${package} -framework)
 endif()
-
-byd__Qt5__configure__add_args(${package} -securetransport)
-
-
 
 if(CMAKE_OSX_SYSROOT)
 
