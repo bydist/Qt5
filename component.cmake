@@ -68,6 +68,7 @@ byd__package__set_module_to_component(${package} "EglFsKmsSupport" qtbase)
 byd__package__set_module_to_component(${package} "Gamepad" qtgamepad)
 byd__package__set_module_to_component(${package} "Gui" qtbase)
 byd__package__set_module_to_component(${package} "Help" qttools)
+byd__package__set_module_to_component(${package} "LinguistTools" qttools)
 byd__package__set_module_to_component(${package} "Location" qtlocation)
 byd__package__set_module_to_component(${package} "MacExtras" qtmacextras)
 byd__package__set_module_to_component(${package} "Multimedia" qtmultimedia)
@@ -125,3 +126,6 @@ byd__package__set_module_to_component(${package} "Zlib" qtbase)
 # egrep -e 'TARGET +='  $(grep -r "load(qt_module)" . | cut -d':' -f1 | xargs) | cut -d"=" -f 2 > module.cmake
 #
 # Sql missing
+#
+# missing
+# byd__package__set_module_to_component(${package} "LinguistTools" qttools)
