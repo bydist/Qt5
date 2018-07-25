@@ -52,12 +52,7 @@ if(APPLE)
     byd__Qt5__configure__add_args(${package} -securetransport)
 else()
     byd__Qt5__configure__add_args(${package} -openssl)
-
-    if(LINUX)
-        byd__Qt5__configure__add_args(${package} -openssl-runtime)
-    else()
-        byd__Qt5__configure__add_args(${package} -openssl-linked)
-    endif()
+    byd__Qt5__configure__add_args(${package} -openssl-linked)
 endif()
 
 byd__Qt5__configure__add_args(${package} -no-sctp)
