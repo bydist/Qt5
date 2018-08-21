@@ -161,7 +161,9 @@ if(LINUX)
 endif()
 
 if(WIN32)
-    byd__Qt5__configure__add_args(${package} -mediaplayer-backend directshow)
+    # we don't use directshow, so no new codec should be installed by end-user and be use in our application,
+    # but if end-user try to open a video on windows, WindowsMediaPlayer is used by default and work as welle as our applications
+    byd__Qt5__configure__add_args(${package} -mediaplayer-backend wmf)
 endif()
 
 # -- Webengine options:
