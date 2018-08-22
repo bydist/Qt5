@@ -92,7 +92,7 @@ byd__Qt5__configure__add_args(${package} -opengl ${OPENGL_API})
 #byd__Qt5__configure__add_args(${package} -opengles3)
 if(MSVC)
     byd__Qt5__configure__add_args(${package} -angle)
-    byd__Qt5__configure__add_args(${package} -combined-angle-lib)
+    byd__Qt5__configure__add_args(${package} -no-combined-angle-lib)
 endif()
 
 if(WIN32)
