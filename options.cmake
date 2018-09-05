@@ -22,6 +22,10 @@ if(UNIX)
 endif()
 
 
+byd__Qt5__configure__add_args(${package} -strip)
+byd__Qt5__configure__add_args(${package} -reduce-exports)
+
+
 # Qt 5.11.1 fail to link with gold linker when build with clang 6.0 or GCC 6.3.0
 byd__Qt5__configure__add_args(${package} -no-use-gold-linker)
 
@@ -68,13 +72,10 @@ if(UNIX)
 endif()
 
 if(LINUX)
-    byd__Qt5__configure__add_args(${package} -fontconfig)
-    byd__Qt5__configure__add_args(${package} -system-freetype)
-    byd__Qt5__configure__add_args(${package} -no-harfbuzz)
-else()
-    byd__Qt5__configure__add_args(${package} -qt-freetype)
-    byd__Qt5__configure__add_args(${package} -qt-harfbuzz)
+    byd__Qt5__configure__add_args(${package} -no-fontconfig)
 endif()
+byd__Qt5__configure__add_args(${package} -qt-freetype)
+byd__Qt5__configure__add_args(${package} -qt-harfbuzz)
 
 
 if(LINUX)
