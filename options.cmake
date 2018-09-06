@@ -72,10 +72,12 @@ if(UNIX)
 endif()
 
 if(LINUX)
-    byd__Qt5__configure__add_args(${package} -no-fontconfig)
+    byd__Qt5__configure__add_args(${package} -fontconfig)
+    byd__Qt5__configure__add_args(${package} -system-freetype)
+else()
+    byd__Qt5__configure__add_args(${package} -qt-freetype)
+    byd__Qt5__configure__add_args(${package} -qt-harfbuzz)
 endif()
-byd__Qt5__configure__add_args(${package} -qt-freetype)
-byd__Qt5__configure__add_args(${package} -qt-harfbuzz)
 
 
 if(LINUX)
