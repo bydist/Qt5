@@ -48,6 +48,7 @@ else()
             qtbase
         DEPENDS
             freetype
+            harfbuzz
     )
 endif()
 
