@@ -42,6 +42,14 @@ if(APPLE OR NOT UNIX)
         DEPENDS
             OpenSSL
     )
+else()
+    byd__package__add_component_dependencies(${package}
+        COMPONENT
+            qtbase
+        DEPENDS
+            freetype
+            harfbuzz
+    )
 endif()
 
 # dependency package
