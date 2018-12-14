@@ -1,14 +1,16 @@
 set(package Qt5)
-set(version 5.11.1)
+set(version 5.11.3)
 
 byd__package__info(${package}
     MAINTAINER_NAME "David Callu"
     MAINTAINER_EMAIL "callu.david@gmail.com"
-    VERSION ${version}-7
+    VERSION ${version}-1
     ABI 5.11
     )
 
+string(REGEX MATCH "[0-9]+\.[0-9]+" version_major_minor ${version})
+
 byd__package__download_info(${package}
-    URL "http://download.qt.io/official_releases/qt/5.11/5.11.1/single/qt-everywhere-src-5.11.1.tar.xz"
-    URL_HASH SHA1=0ac866442a960d4038a51ba3096b2cc5d796b5ee
+    URL "http://download.qt.io/official_releases/qt/${version_major_minor}/${version}/single/qt-everywhere-src-${version}.tar.xz"
+    URL_HASH SHA256=859417642713cee2493ee3646a7fee782c9f1db39e41d7bb1322bba0c5f0ff4d
 )
