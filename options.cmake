@@ -104,7 +104,7 @@ else()
 endif()
 byd__Qt5__configure__add_args(${package} -qpa ${QPA_BACKEND})
 if(LINUX)
-    byd__Qt5__configure__add_args(${package} -xcb-xlib)
+#    byd__Qt5__configure__add_args(${package} -xcb-xlib)
 endif()
 
 #    -- Platform backends:
@@ -135,9 +135,8 @@ if(LINUX)
     byd__Qt5__configure__add_args(${package} -no-libinput)
     byd__Qt5__configure__add_args(${package} -no-mtdev)
     byd__Qt5__configure__add_args(${package} -no-tslib)
-    byd__Qt5__configure__add_args(${package} -no-xinput2)
-    byd__Qt5__configure__add_args(${package} -qt-xkbcommon-x11)
-    byd__Qt5__configure__add_args(${package} -no-xkbcommon-evdev)
+    byd__Qt5__configure__add_args(${package} -no-xcb-xinput)
+    byd__Qt5__configure__add_args(${package} -xkbcommon)
 endif()
 
 #    -- Image formats:

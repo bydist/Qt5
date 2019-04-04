@@ -20,19 +20,9 @@ diff -Naur Qt5--qtbase/qtbase/src/corelib/configure.json Qt5--qtbase_patched/qtb
 diff -Naur Qt5--qtbase/qtbase/src/gui/configure.json Qt5--qtbase_patched/qtbase/src/gui/configure.json
 --- Qt5--qtbase/qtbase/src/gui/configure.json	2018-02-08 19:24:48.000000000 +0100
 +++ Qt5--qtbase_patched/qtbase/src/gui/configure.json	2018-03-28 23:29:40.470880500 +0200
-@@ -278,7 +278,7 @@
-                 "main": "jpeg_create_compress(cinfo);"
-             },
-             "sources": [
--                { "libs": "-llibjpeg", "condition": "config.msvc" },
-+                { "libs": "-ljpeg", "condition": "config.msvc" },
-                 { "libs": "-ljpeg", "condition": "!config.msvc" }
-             ]
-         },
-@@ -286,11 +286,32 @@
+@@ -381,14 +381,50 @@
              "label": "libpng",
              "test": {
-                 "include": "png.h",
 -                "main": "(void) png_create_read_struct(PNG_LIBPNG_VER_STRING,0,0,0);"
 +                "main": "(void) png_create_read_struct(PNG_LIBPNG_VER_STRING,0,0,0);",
 +                "qmake": [
@@ -42,27 +32,48 @@ diff -Naur Qt5--qtbase/qtbase/src/gui/configure.json Qt5--qtbase_patched/qtbase/
 +                    "else: \\",
 +                    "    LIBS += $$LIBS_RELEASE"
 +                ]
++
              },
+             "headers": "png.h",
              "sources": [
                  { "type": "pkgConfig", "args": "libpng" },
+-                { "libs": "-llibpng16", "condition": "config.msvc" },
 -                { "libs": "-llibpng", "condition": "config.msvc" },
+-                { "libs": "-lpng16", "condition": "!config.msvc" },
+-                { "libs": "-lpng", "condition": "!config.msvc" },
 +                {
 +                    "libs": "",
 +                    "builds": {
 +                        "debug": "-llibpng16d",
 +                        "release": "-llibpng16"
 +                    },
-+                    "condition": "config.win32"
++                    "condition": "config.msvc"
 +                },
--                { "libs": "-lpng", "condition": "!config.msvc" }
++                {
++                    "libs": "",
++                    "builds": {
++                        "debug": "-llibpngd",
++                        "release": "-llibpng"
++                    },
++                    "condition": "config.msvc"
++                },
 +                {
 +                    "libs": "",
 +                    "builds": {
 +                        "debug": "-lpng16d",
 +                        "release": "-lpng16"
 +                    },
-+                    "condition": "!config.win32"
-+                }
++                    "condition": "!config.msvc"
++                },
++                {
++                    "libs": "",
++                    "builds": {
++                        "debug": "-lpngd",
++                        "release": "-lpng"
++                    },
++                    "condition": "!config.msvc"
++                },
+                 { "libs": "-s USE_LIBPNG=1", "condition": "config.wasm" }
              ],
              "use": [
 diff -Naur Qt5--qtbase/qtbase/src/network/configure.json Qt5--qtbase_patched/qtbase/src/network/configure.json
@@ -71,10 +82,11 @@ diff -Naur Qt5--qtbase/qtbase/src/network/configure.json Qt5--qtbase_patched/qtb
 @@ -47,7 +47,8 @@
                  ]
              },
+             "headers": "proxy.h",
              "sources": [
 -                "-lproxy"
 +                { "libs": "-llibproxy", "condition": "config.win32" },
 +                { "libs": "-lproxy", "condition": "!config.win32" }
              ]
          },
-         "openssl_headers": {
+         "openssl_headers"
