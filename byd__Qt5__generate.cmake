@@ -192,7 +192,12 @@ function(byd__Qt5__generate_configure_command package)
     endif()
 
     if(CMAKE_CXX_STANDARD AND (NOT MSVC))
-        byd__Qt5__configure__add_args(${package} -c++std c++${CMAKE_CXX_STANDARD})
+        if(CMAKE_CXX_STANDARD EQUAL 17)
+            set(CXXSTD 1z)
+        else()
+            set(CXXSTD ${CMAKE_CXX_STANDARD})
+        endif()
+        byd__Qt5__configure__add_args(${package} -c++std c++${CXXSTD})
     endif()
 
 
