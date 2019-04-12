@@ -1,43 +1,44 @@
 diff -Naur a/qtbase/configure.json b/qtbase/configure.json
 --- a/qtbase/configure.json	2019-03-06 08:59:50.000000000 +0100
-+++ b/qtbase/configure.json	2019-04-12 08:45:42.141693909 +0200
-@@ -160,7 +160,13 @@
++++ b/qtbase/configure.json	2019-04-12 15:40:54.000000000 +0200
+@@ -160,8 +160,9 @@
              },
              "headers": "zlib.h",
              "sources": [
 -                { "libs": "-lzdll", "condition": "config.msvc" },
-+                {
-+                    "builds": {
-+                        "debug": "-lzdlld",
-+                        "release": "-lzdll"
-+                    },
-+                    "condition": "config.msvc"
-+                },
-                 { "libs": "-lzlib", "condition": "config.msvc" },
+-                { "libs": "-lzlib", "condition": "config.msvc" },
++                { "libs": "-lzdlld", "condition": "config.msvc && config.debug" },
++                { "libs": "-lzdll",  "condition": "config.msvc && config.release" },
++                { "libs": "-lzlib",  "condition": "config.msvc" },
                  { "libs": "-lz", "condition": "!config.msvc" },
                  { "libs": "-s USE_ZLIB=1", "condition": "config.wasm" }
+             ]
 diff -Naur a/qtbase/src/corelib/configure.json b/qtbase/src/corelib/configure.json
 --- a/qtbase/src/corelib/configure.json	2019-03-06 08:59:50.000000000 +0100
-+++ b/qtbase/src/corelib/configure.json	2019-04-12 08:43:10.129375125 +0200
-@@ -112,7 +112,13 @@
-                     },
-                     "condition": "config.win32 && !features.shared"
-                 },
++++ b/qtbase/src/corelib/configure.json	2019-04-12 15:49:19.000000000 +0200
+@@ -105,14 +105,10 @@
+             },
+             "headers": [ "unicode/utypes.h", "unicode/ucol.h", "unicode/ustring.h" ],
+             "sources": [
+-                {
+-                    "builds": {
+-                        "debug": "-lsicuind -lsicuucd -lsicudtd",
+-                        "release": "-lsicuin -lsicuuc -lsicudt"
+-                    },
+-                    "condition": "config.win32 && !features.shared"
+-                },
 -                { "libs": "-licuin -licuuc -licudt", "condition": "config.win32 && features.shared" },
-+                {
-+                    "builds": {
-+                        "debug": "-licuind -licuucd -licudt",
-+                        "release": "-licuin -licuuc -licudt"
-+                    },
-+                    "condition": "config.win32 && features.shared"
-+                },
++                { "libs": "-lsicuind -lsicuucd -lsicudtd", "condition": "config.win32 && config.debug && !features.shared" },
++                { "libs": "-lsicuin -lsicuuc -lsicudt", "condition": "config.win32 && config.release && !features.shared" },
++                { "libs": "-licuind -licuucd -licudtd", "condition": "config.win32 && config.debug && features.shared" },
++                { "libs": "-licuin -licuuc -licudt", "condition": "config.win32 && config.release && features.shared" },
                  { "libs": "-licui18n -licuuc -licudata", "condition": "!config.win32" }
              ],
              "use": [
 diff -Naur a/qtbase/src/gui/configure.json b/qtbase/src/gui/configure.json
 --- a/qtbase/src/gui/configure.json	2019-03-06 08:59:50.000000000 +0100
-+++ b/qtbase/src/gui/configure.json	2019-04-12 08:50:58.650449658 +0200
-@@ -385,10 +385,34 @@
++++ b/qtbase/src/gui/configure.json	2019-04-12 15:55:22.000000000 +0200
+@@ -385,10 +385,14 @@
              "headers": "png.h",
              "sources": [
                  { "type": "pkgConfig", "args": "libpng" },
@@ -45,40 +46,20 @@ diff -Naur a/qtbase/src/gui/configure.json b/qtbase/src/gui/configure.json
 -                { "libs": "-llibpng", "condition": "config.msvc" },
 -                { "libs": "-lpng16", "condition": "!config.msvc" },
 -                { "libs": "-lpng", "condition": "!config.msvc" },
-+                {
-+                    "builds": {
-+                        "debug": "-llibpng16d",
-+                        "release": "-llibpng16"
-+                    },
-+		    "condition": "config.msvc"
-+		},
-+                {
-+                    "builds": {
-+                        "debug": "-llibpngd",
-+                        "release": "-llibpng"
-+                    },
-+		    "condition": "config.msvc"
-+		},
-+                {
-+                    "builds": {
-+                        "debug": "-llng16d",
-+                        "release": "-lpng16"
-+                    },
-+		    "condition": "!config.msvc"
-+		},
-+                {
-+                    "builds": {
-+                        "debug": "-llngd",
-+                        "release": "-lpng"
-+                    },
-+		    "condition": "!config.msvc"
-+		},
++		{ "libs": "-llibpng16d", "condition": " config.win32 && config.debug" },
++		{ "libs": "-llibpng16",  "condition": " config.win32 && config.release" },
++		{ "libs": "-llibpngd",   "condition": " config.win32 && config.debug" },
++		{ "libs": "-llibpng",    "condition": " config.win32 && config.release" },
++		{ "libs": "-lpng16d",    "condition": "!config.win32 && config.debug" },
++		{ "libs": "-lpng16",     "condition": "!config.win32 && config.release" },
++		{ "libs": "-lpngd",      "condition": "!config.win32 && config.debug" },
++		{ "libs": "-lpng",       "condition": "!config.win32 && config.release" },
                  { "libs": "-s USE_LIBPNG=1", "condition": "config.wasm" }
              ],
              "use": [
 diff -Naur a/qtbase/src/network/configure.json b/qtbase/src/network/configure.json
 --- a/qtbase/src/network/configure.json	2019-03-06 08:59:50.000000000 +0100
-+++ b/qtbase/src/network/configure.json	2019-04-12 08:43:10.133375133 +0200
++++ b/qtbase/src/network/configure.json	2019-04-12 15:02:46.000000000 +0200
 @@ -51,7 +51,8 @@
              },
              "headers": "proxy.h",
