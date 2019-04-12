@@ -14,10 +14,6 @@ file(GLOB patchList
     LIST_DIRECTORIES false
     "${CMAKE_CURRENT_LIST_DIR}/patch/*.patch"
     )
-file(GLOB patchList_config
-    LIST_DIRECTORIES false
-    "${CMAKE_CURRENT_LIST_DIR}/patch/${CMAKE_BUILD_TYPE}/*.patch"
-    )
 list(APPEND patchList ${patchList_config})
 
 if(patchList)

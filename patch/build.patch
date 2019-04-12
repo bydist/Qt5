@@ -1,7 +1,25 @@
-diff -Naur Qt5--qtbase/qtbase/src/corelib/configure.json Qt5--qtbase_patched/qtbase/src/corelib/configure.json
---- Qt5--qtbase/qtbase/src/corelib/configure.json	2018-02-08 19:24:48.000000000 +0100
-+++ Qt5--qtbase_patched/qtbase/src/corelib/configure.json	2018-03-28 23:22:31.721039100 +0200
-@@ -80,8 +80,14 @@
+diff -Naur a/qtbase/configure.json b/qtbase/configure.json
+--- a/qtbase/configure.json	2019-03-06 08:59:50.000000000 +0100
++++ b/qtbase/configure.json	2019-04-12 08:45:42.141693909 +0200
+@@ -160,7 +160,13 @@
+             },
+             "headers": "zlib.h",
+             "sources": [
+-                { "libs": "-lzdll", "condition": "config.msvc" },
++                {
++                    "builds": {
++                        "debug": "-lzdlld",
++                        "release": "-lzdll"
++                    },
++                    "condition": "config.msvc"
++                },
+                 { "libs": "-lzlib", "condition": "config.msvc" },
+                 { "libs": "-lz", "condition": "!config.msvc" },
+                 { "libs": "-s USE_ZLIB=1", "condition": "config.wasm" }
+diff -Naur a/qtbase/src/corelib/configure.json b/qtbase/src/corelib/configure.json
+--- a/qtbase/src/corelib/configure.json	2019-03-06 08:59:50.000000000 +0100
++++ b/qtbase/src/corelib/configure.json	2019-04-12 08:43:10.129375125 +0200
+@@ -112,7 +112,13 @@
                      },
                      "condition": "config.win32 && !features.shared"
                  },
@@ -16,24 +34,10 @@ diff -Naur Qt5--qtbase/qtbase/src/corelib/configure.json Qt5--qtbase_patched/qtb
                  { "libs": "-licui18n -licuuc -licudata", "condition": "!config.win32" }
              ],
              "use": [
-                 { "lib": "libdl", "condition": "features.dlopen" }
-diff -Naur Qt5--qtbase/qtbase/src/gui/configure.json Qt5--qtbase_patched/qtbase/src/gui/configure.json
---- Qt5--qtbase/qtbase/src/gui/configure.json	2018-02-08 19:24:48.000000000 +0100
-+++ Qt5--qtbase_patched/qtbase/src/gui/configure.json	2018-03-28 23:29:40.470880500 +0200
-@@ -381,14 +381,50 @@
-             "label": "libpng",
-             "test": {
--                "main": "(void) png_create_read_struct(PNG_LIBPNG_VER_STRING,0,0,0);"
-+                "main": "(void) png_create_read_struct(PNG_LIBPNG_VER_STRING,0,0,0);",
-+                "qmake": [
-+                    "CONFIG += build_all",
-+                    "CONFIG(debug, debug|release): \\",
-+                    "    LIBS += $$LIBS_DEBUG",
-+                    "else: \\",
-+                    "    LIBS += $$LIBS_RELEASE"
-+                ]
-+
-             },
+diff -Naur a/qtbase/src/gui/configure.json b/qtbase/src/gui/configure.json
+--- a/qtbase/src/gui/configure.json	2019-03-06 08:59:50.000000000 +0100
++++ b/qtbase/src/gui/configure.json	2019-04-12 08:50:58.650449658 +0200
+@@ -385,10 +385,34 @@
              "headers": "png.h",
              "sources": [
                  { "type": "pkgConfig", "args": "libpng" },
@@ -42,45 +46,40 @@ diff -Naur Qt5--qtbase/qtbase/src/gui/configure.json Qt5--qtbase_patched/qtbase/
 -                { "libs": "-lpng16", "condition": "!config.msvc" },
 -                { "libs": "-lpng", "condition": "!config.msvc" },
 +                {
-+                    "libs": "",
 +                    "builds": {
 +                        "debug": "-llibpng16d",
 +                        "release": "-llibpng16"
 +                    },
-+                    "condition": "config.msvc"
-+                },
++		    "condition": "config.msvc"
++		},
 +                {
-+                    "libs": "",
 +                    "builds": {
 +                        "debug": "-llibpngd",
 +                        "release": "-llibpng"
 +                    },
-+                    "condition": "config.msvc"
-+                },
++		    "condition": "config.msvc"
++		},
 +                {
-+                    "libs": "",
 +                    "builds": {
-+                        "debug": "-lpng16d",
++                        "debug": "-llng16d",
 +                        "release": "-lpng16"
 +                    },
-+                    "condition": "!config.msvc"
-+                },
++		    "condition": "!config.msvc"
++		},
 +                {
-+                    "libs": "",
 +                    "builds": {
-+                        "debug": "-lpngd",
++                        "debug": "-llngd",
 +                        "release": "-lpng"
 +                    },
-+                    "condition": "!config.msvc"
-+                },
++		    "condition": "!config.msvc"
++		},
                  { "libs": "-s USE_LIBPNG=1", "condition": "config.wasm" }
              ],
              "use": [
-diff -Naur Qt5--qtbase/qtbase/src/network/configure.json Qt5--qtbase_patched/qtbase/src/network/configure.json
---- Qt5--qtbase/qtbase/src/network/configure.json	2018-02-08 19:24:48.000000000 +0100
-+++ Qt5--qtbase_patched/qtbase/src/network/configure.json	2018-03-29 00:47:05.333592200 +0200
-@@ -47,7 +47,8 @@
-                 ]
+diff -Naur a/qtbase/src/network/configure.json b/qtbase/src/network/configure.json
+--- a/qtbase/src/network/configure.json	2019-03-06 08:59:50.000000000 +0100
++++ b/qtbase/src/network/configure.json	2019-04-12 08:43:10.133375133 +0200
+@@ -51,7 +51,8 @@
              },
              "headers": "proxy.h",
              "sources": [
@@ -89,4 +88,4 @@ diff -Naur Qt5--qtbase/qtbase/src/network/configure.json Qt5--qtbase_patched/qtb
 +                { "libs": "-lproxy", "condition": "!config.win32" }
              ]
          },
-         "openssl_headers"
+         "openssl_headers": {
